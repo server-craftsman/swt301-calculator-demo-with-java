@@ -1,6 +1,6 @@
 package com.fptu.swt301.demo.insurance.debug;
 
-import com.fptu.swt301.demo.insurance.calculator.InsurancePremiumCalculator;
+import com.fptu.swt301.demo.insurance.service.PremiumCalculationService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class InsurancePremiumCalculatorDebugTest {
 
-    private final InsurancePremiumCalculator calculator = new InsurancePremiumCalculator();
+    private final PremiumCalculationService premiumService = new PremiumCalculationService();
 
     @Test
     public void debugTestCase02() {
@@ -23,7 +23,7 @@ public class InsurancePremiumCalculatorDebugTest {
         // Expected: £91.00
         // Actual: £90.99
 
-        double premium = calculator.calculatePremium(
+        double premium = premiumService.calculatePremium(
                 "No cover", // 1% increase
                 "No", // No windscreen
                 0, // 0 accidents (30% discount)

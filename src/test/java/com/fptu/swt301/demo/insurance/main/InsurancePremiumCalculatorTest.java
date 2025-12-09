@@ -1,6 +1,6 @@
 package com.fptu.swt301.demo.insurance.main;
 
-import com.fptu.swt301.demo.insurance.calculator.InsurancePremiumCalculator;
+import com.fptu.swt301.demo.insurance.service.PremiumCalculationService;
 import com.fptu.swt301.demo.insurance.exception.ValidationException;
 
 import org.junit.jupiter.api.Disabled;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InsurancePremiumCalculatorTest {
 
-    private final InsurancePremiumCalculator calculator = new InsurancePremiumCalculator();
+    private final PremiumCalculationService premiumService = new PremiumCalculationService();
 
     /**
      * Test tất cả các test cases từ CSV file
@@ -73,7 +73,7 @@ public class InsurancePremiumCalculatorTest {
                     System.out.printf("  Expected: Exception (IllegalArgumentException)\n");
 
                     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-                        calculator.calculatePremium(
+                        premiumService.calculatePremium(
                                 data.breakdownCover,
                                 data.windscreenRepair,
                                 data.numberOfAccidents,
@@ -101,7 +101,7 @@ public class InsurancePremiumCalculatorTest {
                 } else {
                     // Test case bình thường
                     double expectedPremium = Double.parseDouble(data.expectedPremium);
-                    double actualPremium = calculator.calculatePremium(
+                    double actualPremium = premiumService.calculatePremium(
                             data.breakdownCover,
                             data.windscreenRepair,
                             data.numberOfAccidents,
@@ -279,7 +279,7 @@ public class InsurancePremiumCalculatorTest {
     @Disabled
     @Order(2)
     public void testBreakdownCover_NoCover() {
-        double premium = calculator.calculatePremium("No cover", "No", 1, 3000, 1000, "Driveway/Carport");
+        double premium = premiumService.calculatePremium("No cover", "No", 1, 3000, 1000, "Driveway/Carport");
         assertEquals(1010.0, premium, 0.01, "No cover should increase by 1%");
     }
 
@@ -290,7 +290,7 @@ public class InsurancePremiumCalculatorTest {
     @Disabled
     @Order(3)
     public void testBreakdownCover_Roadside() {
-        double premium = calculator.calculatePremium("Roadside", "No", 1, 3000, 1000, "Driveway/Carport");
+        double premium = premiumService.calculatePremium("Roadside", "No", 1, 3000, 1000, "Driveway/Carport");
         assertEquals(1020.0, premium, 0.01, "Roadside should increase by 2%");
     }
 
@@ -301,7 +301,7 @@ public class InsurancePremiumCalculatorTest {
     @Disabled
     @Order(4)
     public void testBreakdownCover_AtHome() {
-        double premium = calculator.calculatePremium("At home", "No", 1, 3000, 1000, "Driveway/Carport");
+        double premium = premiumService.calculatePremium("At home", "No", 1, 3000, 1000, "Driveway/Carport");
         assertEquals(1030.0, premium, 0.01, "At home should increase by 3%");
     }
 
@@ -312,7 +312,7 @@ public class InsurancePremiumCalculatorTest {
     @Disabled
     @Order(5)
     public void testBreakdownCover_European() {
-        double premium = calculator.calculatePremium("European", "No", 1, 3000, 1000, "Driveway/Carport");
+        double premium = premiumService.calculatePremium("European", "No", 1, 3000, 1000, "Driveway/Carport");
         assertEquals(1040.0, premium, 0.01, "European should increase by 4%");
     }
 
@@ -323,7 +323,7 @@ public class InsurancePremiumCalculatorTest {
     @Disabled
     @Order(6)
     public void testWindscreenRepair_Yes() {
-        double premium = calculator.calculatePremium("No cover", "Yes", 1, 3000, 1000, "Driveway/Carport");
+        double premium = premiumService.calculatePremium("No cover", "Yes", 1, 3000, 1000, "Driveway/Carport");
         assertEquals(1040.0, premium, 0.01, "Windscreen repair should add £30");
     }
 
@@ -334,7 +334,7 @@ public class InsurancePremiumCalculatorTest {
     @Disabled
     @Order(7)
     public void testZeroAccidents_Discount() {
-        double premium = calculator.calculatePremium("No cover", "No", 0, 3000, 1000, "Driveway/Carport");
+        double premium = premiumService.calculatePremium("No cover", "No", 0, 3000, 1000, "Driveway/Carport");
         assertEquals(707.0, premium, 0.01, "Zero accidents should give 30% discount");
     }
 
@@ -345,7 +345,7 @@ public class InsurancePremiumCalculatorTest {
     @Disabled
     @Order(8)
     public void testHighMileage_Above5000() {
-        double premium = calculator.calculatePremium("No cover", "No", 1, 6000, 1000, "Driveway/Carport");
+        double premium = premiumService.calculatePremium("No cover", "No", 1, 6000, 1000, "Driveway/Carport");
         assertEquals(1060.0, premium, 0.01, "Mileage >5000 should add £50");
     }
 
@@ -356,7 +356,7 @@ public class InsurancePremiumCalculatorTest {
     @Disabled
     @Order(9)
     public void testPublicParking() {
-        double premium = calculator.calculatePremium("No cover", "No", 1, 3000, 1000, "Public Place");
+        double premium = premiumService.calculatePremium("No cover", "No", 1, 3000, 1000, "Public Place");
         assertEquals(1040.0, premium, 0.01, "Public parking should add £30");
     }
 
@@ -368,7 +368,7 @@ public class InsurancePremiumCalculatorTest {
     @Order(10)
     public void testEstimatedValue_LessThan100_ThrowsException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            calculator.calculatePremium("No cover", "No", 0, 3000, 99, "Driveway/Carport");
+            premiumService.calculatePremium("No cover", "No", 0, 3000, 99, "Driveway/Carport");
         });
         assertTrue(exception.getMessage().contains("at least £100"));
     }
@@ -380,7 +380,7 @@ public class InsurancePremiumCalculatorTest {
     @Disabled
     @Order(11)
     public void testEstimatedValue_Exactly100() {
-        double premium = calculator.calculatePremium("No cover", "No", 0, 3000, 100, "Driveway/Carport");
+        double premium = premiumService.calculatePremium("No cover", "No", 0, 3000, 100, "Driveway/Carport");
         assertEquals(707.0, premium, 0.01, "Estimated value of exactly £100 should be valid");
     }
 }

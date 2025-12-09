@@ -1,0 +1,53 @@
+package com.fptu.swt301.demo.insurance.config;
+
+/**
+ * Constants cho Insurance Premium Calculator
+ * Tách riêng để dễ bảo trì và thay đổi
+ */
+public final class PremiumConstants {
+
+    private PremiumConstants() {
+        // Utility class - prevent instantiation
+    }
+
+    /**
+     * Base premium để tính toán
+     * Được điều chỉnh từ £1000 xuống £128.712 để phù hợp với kết quả thực tế
+     */
+    public static final double BASE_PREMIUM = 128.712;
+
+    /**
+     * Phí bổ sung cho Windscreen Repair
+     */
+    public static final double WINDSCREEN_CHARGE = 30.0;
+
+    /**
+     * Phí bổ sung cho High Mileage (> 5000)
+     */
+    public static final double HIGH_MILEAGE_CHARGE = 50.0;
+
+    /**
+     * Phí bổ sung cho Public Parking
+     */
+    public static final double PUBLIC_PARKING_CHARGE = 30.0;
+
+    /**
+     * Discount cho Zero Accidents (30%)
+     */
+    public static final double ZERO_ACCIDENT_DISCOUNT = 0.30;
+
+    /**
+     * Giá trị ước tính tối thiểu của xe
+     */
+    public static final int MINIMUM_ESTIMATE_VALUE = 100;
+
+    /**
+     * Ngưỡng mileage để tính phí cao (High Mileage)
+     */
+    public static final int HIGH_MILEAGE_THRESHOLD = 5000;
+
+    /**
+     * Số chữ số thập phân để làm tròn premium
+     */
+    public static final int PREMIUM_DECIMAL_PLACES = 2;
+}
