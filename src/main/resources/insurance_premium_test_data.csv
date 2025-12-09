@@ -1,0 +1,77 @@
+testCaseId,testCaseDescription,breakdownCover,windscreenRepair,numberOfAccidents,totalMileage,estimatedValue,parkingLocation,expectedPremium,testCategory
+TC01,Giá trị biên: EstimatedValue = 99 (Invalid),No cover,No,-1,-3000,99,Driveway/Carport,EXCEPTION,Boundary Value - Invalid
+TC02,Giá trị biên: EstimatedValue = 100 (Valid - Min),No cover,No,0,3000,100,Driveway/Carport,91.00,Boundary Value - Valid Min
+TC03,Giá trị biên: EstimatedValue = 101 (Valid),No cover,No,0,3000,101,Driveway/Carport,91.00,Boundary Value - Valid
+TC04,Giá trị biên: TotalMileage = 5000 (không tăng phí),No cover,No,0,5000,1000,Driveway/Carport,91.00,Boundary Value - Mileage Threshold
+TC05,Giá trị biên: TotalMileage = 5001 (tăng phí £50),No cover,No,0,5001,1000,Driveway/Carport,141.00,Boundary Value - Mileage Above Threshold
+TC06,Giá trị biên: NumberOfAccidents = 0 (discount 30%),No cover,No,0,3000,1000,Driveway/Carport,91.00,Boundary Value - Zero Accident Discount
+TC07,Giá trị biên: NumberOfAccidents = 1 (không discount),No cover,No,1,3000,1000,Driveway/Carport,130.00,Boundary Value - Has Accident
+TC08,Phân vùng: No cover (1%) + No windscreen + 0 accident + Low mileage + Safe parking,No cover,No,0,3000,5000,Driveway/Carport,91.00,Equivalence Partitioning - Minimal Premium
+TC09,Phân vùng: Roadside (2%) + No windscreen + 0 accident + Low mileage + Safe parking,Roadside,No,0,3000,5000,Locked Garage,91.90,Equivalence Partitioning - Roadside Cover
+TC10,Phân vùng: At home (3%) + No windscreen + 0 accident + Low mileage + Safe parking,At home,No,0,3000,5000,Private Property,92.80,Equivalence Partitioning - At Home Cover
+TC11,Phân vùng: European (4%) + No windscreen + 0 accident + Low mileage + Safe parking,European,No,0,3000,5000,Street/Road,93.70,Equivalence Partitioning - European Cover
+TC12,Phân vùng: No cover + Yes windscreen (£30) + 0 accident + Low mileage + Safe parking,No cover,Yes,0,3000,5000,Driveway/Carport,112.00,Equivalence Partitioning - Windscreen Repair
+TC13,Phân vùng: No cover + No windscreen + 0 accident + Low mileage + Public parking (£30),No cover,No,0,3000,5000,Public Place,121.00,Equivalence Partitioning - Public Parking
+TC14,Phân vùng: No cover + No windscreen + 1 accident (no discount) + Low mileage + Safe parking,No cover,No,1,3000,5000,Driveway/Carport,130.00,Equivalence Partitioning - With Accident
+TC15,Phân vùng: No cover + No windscreen + 0 accident + High mileage (£50) + Safe parking,No cover,No,0,6000,5000,Driveway/Carport,141.00,Equivalence Partitioning - High Mileage
+TC16,Kết hợp: European (4%) + Yes windscreen + 0 accident + High mileage + Public parking,European,Yes,0,6000,5000,Public Place,194.70,Combination - Multiple Increases with Discount
+TC17,Kết hợp: At home (3%) + Yes windscreen + 1 accident + High mileage + Public parking,At home,Yes,1,6000,5000,Public Place,242.57,Combination - Maximum Premium (with accident)
+TC18,Kết hợp: Roadside (2%) + No windscreen + 2 accidents + High mileage + Public parking,Roadside,No,2,8000,10000,Public Place,211.29,Combination - Multiple Accidents
+TC19,Kết hợp: European (4%) + Yes windscreen + 0 accident + Low mileage + Safe parking,European,Yes,0,2000,8000,Unlocked Garage,114.70,Combination - European with Windscreen
+TC20,Kết hợp: No cover + Yes windscreen + 0 accident + Boundary mileage 5000 + Safe parking,No cover,Yes,0,5000,5000,Driveway/Carport,112.00,Combination - Boundary Mileage with Windscreen
+TC21,Kết hợp: Roadside + No windscreen + 0 accident + Boundary mileage 5001 + Public parking,Roadside,No,0,5001,5000,Public Place,171.90,Combination - Boundary Mileage Above with Public Parking
+TC22,Extreme: Tất cả yếu tố tăng phí + 0 accident (có discount),European,Yes,0,10000,50000,Public Place,194.70,Extreme Case - All Increases with Discount
+TC23,Extreme: Không có yếu tố tăng phí + 1 accident (không discount),No cover,No,1,1000,10000,Driveway/Carport,130.00,Extreme Case - Minimal Increases without Discount
+TC24,Extreme: EstimatedValue rất cao + tất cả yếu tố tăng,European,Yes,0,15000,100000,Public Place,194.70,Extreme Case - High Value Vehicle
+TC25,Phân vùng: At home + windscreen + 0 accident + boundary value 100,At home,Yes,0,3000,100,Locked Garage,113.80,Combination - Minimum Value with Multiple Factors
+
+# ============================================================================================
+# GHI CHÚ PHÂN TÍCH BUG CỦA WEB PRODUCTION THỰC TẾ (Guru99 Insurance V3)
+# ============================================================================================
+# 
+# 1. VẤN ĐỀ VỚI ESTIMATED VALUE:
+#    - TC02: Khi nhập Estimated Value = £100.00, web không cho tính toán
+#      → PHÂN TÍCH: Theo SRS T8, Estimated Value phải >= 100. Logic code đúng (>= 100).
+#      → BUG WEB: Web có thể có validation strict hơn (yêu cầu > 100 thay vì >= 100) 
+#        hoặc có bug validation ở frontend/backend.
+#    - Khi nhập Estimated Value càng lớn thì kết quả càng lớn?
+#      → PHÂN TÍCH: Theo SRS và logic code, Estimated Value KHÔNG ảnh hưởng đến premium 
+#        (chỉ có validation minimum 100 để không cho proceed nếu < 100).
+#      → BUG WEB: Web đang tính toán SAI - Estimated Value không nên ảnh hưởng đến premium.
+#      → KẾT LUẬN: Đây là BUG NGHIÊM TRỌNG - web đang tính toán sai logic.
+#
+# 2. VẤN ĐỀ VỚI PARKING LOCATION "PUBLIC PLACE":
+#    - Khi chọn "Public Place" thì giá không thay đổi?
+#      → PHÂN TÍCH: Theo SRS T9, nếu Parking Location = "Public Place" thì phải tăng £30.
+#      → Logic code đúng: Check "Public Place" (case insensitive) và thêm £30.
+#      → BUG WEB: Web có thể:
+#        * Không implement logic T9
+#        * Format string khác (có thể có space, case sensitive, hoặc tên khác)
+#        * Logic bị sai thứ tự tính toán (thêm £30 trước khi apply discount?)
+#      → KẾT LUẬN: Web KHÔNG implement đúng requirement T9.
+#
+# 3. VẤN ĐỀ VỚI NUMBER OF ACCIDENTS:
+#    - Khi điền +1 thì không giảm 30% là ĐÚNG LOGIC
+#      → PHÂN TÍCH: 
+#        * Theo SRS T6: Chỉ có discount 30% khi Number Of Accidents = 0.
+#        * Logic code đúng: Chỉ apply discount khi numberOfAccidents == 0.
+#        * Nếu numberOfAccidents != 0 (bao gồm 1, 2, 3, ...) thì KHÔNG có discount → ĐÚNG.
+#        * Khi điền +1, premium không có discount là hoàn toàn đúng theo requirement.
+#    - VẤN ĐỀ THỰC SỰ: Web cho phép nhập số âm (-1)
+#      → PHÂN TÍCH:
+#        * Số tai nạn KHÔNG THỂ là số âm (số âm không có ý nghĩa thực tế).
+#        * Web NÊN validate và reject input số âm ngay từ đầu.
+#        * Đây là BUG VALIDATION - web không kiểm tra giá trị âm.
+#      → KẾT LUẬN: 
+#        * Logic khi numberOfAccidents = +1 (không discount) là ĐÚNG.
+#        * BUG: Web cho phép nhập số âm (-1) - cần thêm validation để reject số âm.
+#        * Web nên validate: numberOfAccidents >= 0 (chỉ chấp nhận số >= 0).
+#
+# 4. TÓM TẮT CÁC BUG PHÁT HIỆN:
+#    BUG NGHIÊM TRỌNG: Estimated Value ảnh hưởng đến premium (không nên ảnh hưởng).
+#    BUG: Parking Location "Public Place" không tăng £30 như requirement T9.
+#    BUG: Validation Estimated Value = 100 có thể bị reject (nên accept >= 100).
+#    BUG VALIDATION: Web cho phép nhập Number Of Accidents là số âm (-1) - nên reject số âm.
+#    LƯU Ý: Logic khi Number Of Accidents = +1 (không discount) là ĐÚNG theo SRS T6.
+#
+# ============================================================================================

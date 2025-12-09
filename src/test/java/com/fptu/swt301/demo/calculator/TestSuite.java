@@ -1,4 +1,4 @@
-package com.fptu.calculator.csv.testing.danhuy.demo;
+package com.fptu.swt301.demo.calculator;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;

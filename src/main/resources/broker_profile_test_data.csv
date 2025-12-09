@@ -1,0 +1,69 @@
+testCaseId,testDescription,userId,title,firstName,surname,phone,dateOfBirth,licenseType,licensePeriod,occupation,street,city,county,postCode,testCategory
+TC_P01,Valid profile - Full data,SE172177,Mr,Nguyen,Dan Huy,84929345678,2025-05-15,Full,5,Student,123 Oxford Street,Ho Chi Minh City,Ho Chi Minh,700000,Equivalence Partitioning - Valid
+TC_P02,Valid profile - Mrs title,SE184761,Mrs,Pham,Thu Phuong,0987654321,1990-03-20,Full,3,Student,456 Baker Street,Hanoi,Hanoi,100000,Equivalence Partitioning - Valid
+TC_P03,Valid profile - Miss title,SE184409,Miss,Lam Thi,Ngoc Han,0976543210,1995-07-10,Provisional,1,Student,789 High Street,Da Nang,Da Nang,550000,Equivalence Partitioning - Valid
+TC_P04,Valid profile - Ms title,SE182791,Ms,Lam Thi,Ngoc Han,0965432109,1988-12-25,Full,7,Student,321 Park Lane,Ho Chi Minh City,Ho Chi Minh,700000,Equivalence Partitioning - Valid
+TC_P05,Valid profile - Doctor title,SE160003,Doctor,Nguyen,Dan Huy,0954321098,1980-09-30,Full,10,Student,654 Queens Road,Hanoi,Hanoi,100000,Equivalence Partitioning - Valid
+TC_P06,Boundary - Age exactly 18,SE172177,Mr,Nguyen,Dan Huy,0911111111,2005-01-01,Provisional,1,Student,111 New Street,Ho Chi Minh City,Ho Chi Minh,700000,Boundary Value - Minimum Age
+TC_P07,Boundary - Age 17 (Invalid),SE172177,Mr,Nguyen,Dan Huy,0922222222,2008-06-15,Provisional,2,Student,222 Old Street,Hanoi,Hanoi,100000,Boundary Value - Below Minimum Age
+TC_P08,Boundary - Phone 10 digits (Vietnam format),SE172177,Mr,Nguyen,Dan Huy,0912344538,1992-08-20,Full,4,Student,333 Spider Lane,Ho Chi Minh City,Ho Chi Minh,700000,Boundary Value - Min Phone Digits
+TC_P09,Boundary - Phone 11 digits (+84 format),SE182791,Ms,Nguyen Dinh,Bao Anh,84912345678,1987-04-12,Full,6,Student,444 Main Road,Hanoi,Hanoi,100000,Boundary Value - Max Phone Digits
+TC_P10,Boundary - Phone 9 digits (Invalid),SE172177,Mr,Nguyen,Dan Huy,091234567,1985-11-05,Full,5,Engineer,555 Short Street,Da Nang,Da Nang,550000,Boundary Value - Below Min Phone
+TC_P11,Boundary - Phone 12 digits (Invalid),SE182791,Ms,Nguyen Dinh,Bao Anh,849123456789,1990-02-28,Full,8,Artist,666 Long Avenue,Ho Chi Minh City,Ho Chi Minh,700000,Boundary Value - Above Max Phone
+TC_P12,Invalid - Empty FirstName,USER012,Mr,Nguyen,Dan Huy,0912345678,1985-03-15,Full,5,Student,777 Empty Street,Ho Chi Minh City,Ho Chi Minh,700000,Equivalence Partitioning - Invalid FirstName
+TC_P13,Invalid - Empty Surname,SE172177,Mr,Nguyen,Dan Huy,0987654321,1988-07-20,Full,4,Student,888 No Surname Rd,Hanoi,Hanoi,100000,Equivalence Partitioning - Invalid Surname
+TC_P14,Invalid - Empty Phone,SE172177,Mr,Nguyen,Dan Huy,0912345678,1992-09-10,Full,3,Engineer,999 Silent Lane,Da Nang,Da Nang,550000,Equivalence Partitioning - Invalid Phone
+TC_P15,Invalid - Null DateOfBirth,SE172177,Mr,Nguyen,Dan Huy,0976543210,null,Full,2,Student,101 Time Street,Ho Chi Minh City,Ho Chi Minh,700000,Equivalence Partitioning - Invalid DOB
+TC_P16,Valid - License Provisional,SE184409,Miss,Lam Thi,Ngoc Han,0965432109,1998-06-18,Provisional,2,Student,202 Learn Drive,Hanoi,Hanoi,100000,Equivalence Partitioning - Provisional License
+TC_P17,Valid - Long occupation name,SE184409,Professor,Nguyen,Dan Huy,0933333333,1975-12-01,Full,15,Math Professor,303 Code Street,Ho Chi Minh City,Ho Chi Minh,700000,Equivalence Partitioning - Long Text
+TC_P18,Valid - Special chars in address,SE184761,Mrs,Pham,Thu Phuong,0944444444,1983-08-25,Full,9,Teacher,40A St. Mary's Road,Da Nang,Da Nang,550000,Equivalence Partitioning - Special Characters
+TC_P20,Create duplicate profile,SE182791,Mr,Duplicate,User,0987654321,1990-01-01,Full,5,Student,999 Duplicate Rd,Ho Chi Minh City,Ho Chi Minh,700000,Create Duplicate
+TC_P21,Valid - Captain title,USER021,Captain,Lam,Quoc Anh,0911111111,1982-03-15,Full,8,Architect,505 Captain Road,Ho Chi Minh City,Ho Chi Minh,700000,Equivalence Partitioning - Title Variation
+TC_P22,Valid - Professor title,USER022,Professor,Nguyen,Dan Huy,0922222222,1978-11-20,Full,12,Scientist,606 Professor Lane,Hanoi,Hanoi,100000,Equivalence Partitioning - Title Variation
+TC_P23,Valid - Sir title,USER023,Sir,Nguyen,Dan Huy,0933333333,1970-05-10,Full,20,Lawyer,707 Sir Street,Da Nang,Da Nang,550000,Equivalence Partitioning - Title Variation
+TC_P24,Valid - Lieutenant Colonel title,USER024,Lieutenant Colonel,James,Brown,0944444444,1985-08-25,Full,6,Physician,808 Military Road,Ho Chi Minh City,Ho Chi Minh,700000,Equivalence Partitioning - Title Variation
+TC_P25,Valid - Various occupations,SE172177,Mr,Nguyen,Dan Huy,0955555555,1990-12-05,Full,4,Surgeon,909 Hospital Way,Hanoi,Hanoi,100000,Equivalence Partitioning - Occupation Variation
+TC_P26,Valid - Nurse occupation,SE182791,Ms,Pham Thi,Thu Phuong,0966666666,1992-07-18,Full,3,Nurse,101 Health Street,Ho Chi Minh City,Ho Chi Minh,700000,Equivalence Partitioning - Occupation Variation
+TC_P27,Valid - Pharmacist occupation,SE172177,Mrs,Pham Thi,Thu Phuong,0977777777,1987-04-22,Full,5,Pharmacist,202 Pharmacy Lane,Da Nang,Da Nang,550000,Equivalence Partitioning - Occupation Variation
+TC_P28,Valid - Psychologist occupation,SE172177,Doctor,Nguyen,Dan Huy,0988888888,1983-09-30,Full,7,Psychologist,303 Mind Road,Hanoi,Hanoi,100000,Equivalence Partitioning - Occupation Variation
+TC_P29,Invalid - Invalid title,SE172177,InvalidTitle,Nguyen,Dan Huy,0999999999,1985-06-12,Full,5,Engineer,404 Invalid Street,Ho Chi Minh City,Ho Chi Minh,700000,Equivalence Partitioning - Invalid Title
+# ============================================================================================
+# GHI CHÚ PHÂN TÍCH BUG CỦA WEB PRODUCTION THỰC TẾ (Guru99 Insurance V3)
+# ============================================================================================
+# 
+# 1. BUG NGHIÊM TRỌNG: KHÔNG THỂ UPDATE PROFILE THÀNH CÔNG
+#    - Trên web production, chức năng "Edit Profile" không hoạt động đúng.
+#    - Khi click "Update User" sau khi chỉnh sửa thông tin, hệ thống không lưu thay đổi.
+#    - Profile vẫn giữ nguyên thông tin cũ, không được cập nhật.
+#    - KẾT LUẬN: Đây là BUG NGHIÊM TRỌNG - chức năng cơ bản không hoạt động.
+#
+# 2. BUG NGHIÊM TRỌNG: KHÔNG CÓ RÀNG BUỘC VALIDATION CHO CÁC FIELD
+#    - Trên web production, các field trong form Edit Profile KHÔNG có validation:
+#      * Title: Có thể nhập bất kỳ giá trị nào (không kiểm tra danh sách hợp lệ)
+#      * FirstName: Có thể để trống hoặc nhập ký tự đặc biệt
+#      * Surname: Có thể để trống hoặc nhập ký tự đặc biệt
+#      * Phone: Không kiểm tra format (có thể nhập số không hợp lệ, số âm, ký tự đặc biệt)
+#      * DateOfBirth: Không kiểm tra tuổi tối thiểu (có thể nhập ngày sinh của trẻ em)
+#      * Occupation: Có thể nhập bất kỳ giá trị nào (không kiểm tra danh sách hợp lệ)
+#      * License Type/Period: Không có validation
+#      * Address fields: Không có validation
+#    - KẾT LUẬN: Đây là BUG NGHIÊM TRỌNG về bảo mật và data integrity.
+#
+# 3. SO SÁNH VỚI CODE IMPLEMENTATION:
+#    - Code implementation: Có đầy đủ validation cho tất cả các field:
+#      * Title: Chỉ chấp nhận 21 giá trị hợp lệ từ form
+#      * Occupation: Chỉ chấp nhận 27 giá trị hợp lệ từ form
+#      * Phone: Validate format Việt Nam (10 số với prefix 03/05/07/08/09, hoặc 11 số với +84)
+#      * FirstName/Surname: Không được để trống
+#      * DateOfBirth: Phải >= 18 tuổi
+#      * Update Profile: Hoạt động đúng, lưu thay đổi thành công
+#    - Web production: KHÔNG có validation, không thể update profile.
+#
+# 4. KHUYẾN NGHỊ:
+#    - Thêm validation cho tất cả các field theo đúng requirement
+#    - Fix chức năng Update Profile để hoạt động đúng
+#    - Implement server-side validation (không chỉ dựa vào client-side)
+#    - Thêm error handling và thông báo lỗi rõ ràng cho người dùng
+#
+# ============================================================================================
+

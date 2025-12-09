@@ -1,4 +1,4 @@
-package com.fptu.calculator.csv.testing.danhuy.demo;
+package com.fptu.swt301.demo.calculator;
 
 public class PasswordValidator {
     public boolean isPasswordStrong (String password) throws Exception{

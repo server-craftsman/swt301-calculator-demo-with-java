@@ -1,12 +1,11 @@
-package com.fptu.calculator.csv.testing.danhuy.demo;
+package com.fptu.swt301.demo.calculator;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestDemo {
-
+public class TestDemo_Fixed {
     @Test
     public  void  testIsPrimeNumber1()  {
         Demo demo1 = new  Demo();
