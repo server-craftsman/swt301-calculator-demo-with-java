@@ -49,6 +49,15 @@ TC25,Phân vùng: At home + windscreen + 0 accident + boundary value 100,At home
 #        * Format string khác (có thể có space, case sensitive, hoặc tên khác)
 #        * Logic bị sai thứ tự tính toán (thêm £30 trước khi apply discount?)
 #      → KẾT LUẬN: Web KHÔNG implement đúng requirement T9.
+#    - Parking Location để trống vẫn tính được premium?
+#      → PHÂN TÍCH: 
+#        * Parking Location là field BẮT BUỘC theo SRS - không thể để trống.
+#        * Nếu để trống, web NÊN validate và reject request, không cho tính toán.
+#        * Logic code đúng: Parking Location không null/empty, phải có giá trị hợp lệ.
+#      → BUG WEB: Web cho phép để trống Parking Location và vẫn tính được premium.
+#      → KẾT LUẬN: Đây là BUG VALIDATION - web không kiểm tra field bắt buộc.
+#        * Web nên validate: Parking Location không được null, empty, hoặc blank.
+#        * Web nên reject request nếu Parking Location trống và báo lỗi validation.
 #
 # 3. VẤN ĐỀ VỚI NUMBER OF ACCIDENTS:
 #    - Khi điền +1 thì không giảm 30% là ĐÚNG LOGIC
@@ -70,6 +79,7 @@ TC25,Phân vùng: At home + windscreen + 0 accident + boundary value 100,At home
 # 4. TÓM TẮT CÁC BUG PHÁT HIỆN:
 #    BUG NGHIÊM TRỌNG: Estimated Value ảnh hưởng đến premium (không nên ảnh hưởng).
 #    BUG: Parking Location "Public Place" không tăng £30 như requirement T9.
+#    BUG VALIDATION: Parking Location để trống vẫn tính được premium - nên reject khi trống.
 #    BUG: Validation Estimated Value = 100 có thể bị reject (nên accept >= 100).
 #    BUG VALIDATION: Web cho phép nhập Number Of Accidents là số âm (-1) - nên reject số âm.
 #    LƯU Ý: Logic khi Number Of Accidents = +1 (không discount) là ĐÚNG theo SRS T6.

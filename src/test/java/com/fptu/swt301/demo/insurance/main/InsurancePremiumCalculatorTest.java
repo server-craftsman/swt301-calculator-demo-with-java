@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer;
 
@@ -40,11 +42,12 @@ public class InsurancePremiumCalculatorTest {
      * - Combination Testing: kết hợp nhiều yếu tố
      * - Extreme Cases: các trường hợp cực biên
      */
-    @Test
-    @DisplayName("Test Insurance Premium from CSV File")
+    @TestFactory
+    @DisplayName("Insurance Premium Calculator - CSV Test Cases")
     @Order(1)
-    public void testInsurancePremiumFromCsvFile() {
+    public List<DynamicTest> testInsurancePremiumFromCsvFile() {
         List<InsuranceTestData> testDataList = readCsvFile("/insurance_premium_test_data.csv");
+        List<DynamicTest> dynamicTests = new ArrayList<>();
 
         System.out.println("\n========================================");
         System.out.println("INSURANCE PREMIUM CALCULATOR TEST");
@@ -52,144 +55,96 @@ public class InsurancePremiumCalculatorTest {
         System.out.println("========================================\n");
 
         int testCaseNumber = 1;
-        int passedCount = 0;
-        int failedCount = 0;
-
         for (InsuranceTestData data : testDataList) {
-            try {
-                System.out.printf("Test Case #%d: %s\n", testCaseNumber, data.testCaseId);
-                System.out.printf("  Description: %s\n", data.testCaseDescription);
-                System.out.printf("  Category: %s\n", data.testCategory);
-                System.out.printf("  Input:\n");
-                System.out.printf("    - Breakdown Cover: %s\n", data.breakdownCover);
-                System.out.printf("    - Windscreen Repair: %s\n", data.windscreenRepair);
-                System.out.printf("    - Number of Accidents: %d\n", data.numberOfAccidents);
-                System.out.printf("    - Total Mileage: %d\n", data.totalMileage);
-                System.out.printf("    - Estimated Value: £%.2f\n", data.estimatedValue);
-                System.out.printf("    - Parking Location: %s\n", data.parkingLocation);
+            final InsuranceTestData testData = data; // final for lambda
+            final int caseNumber = testCaseNumber;
 
-                if ("EXCEPTION".equalsIgnoreCase(data.expectedPremium)) {
-                    // Test case mong đợi exception
-                    System.out.printf("  Expected: Exception (IllegalArgumentException)\n");
+            // Tạo dynamic test với display name là test case ID
+            DynamicTest dynamicTest = DynamicTest.dynamicTest(
+                    String.format("TC%02d: %s - %s", caseNumber, testData.testCaseId, testData.testCaseDescription),
+                    () -> executeTestCase(testData, caseNumber));
 
-                    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-                        premiumService.calculatePremium(
-                                data.breakdownCover,
-                                data.windscreenRepair,
-                                data.numberOfAccidents,
-                                data.totalMileage,
-                                data.estimatedValue,
-                                data.parkingLocation);
-                    });
-
-                    if (exception instanceof ValidationException) {
-                        ValidationException ve = (ValidationException) exception;
-                        if (ve.getErrorCount() > 1) {
-                            System.out.printf("  Actual: ValidationException with %d errors:\n", ve.getErrorCount());
-                            for (int i = 0; i < ve.getErrors().size(); i++) {
-                                System.out.printf("    %d. %s\n", i + 1, ve.getErrors().get(i));
-                            }
-                        } else {
-                            System.out.printf("  Actual: Exception thrown - %s\n", exception.getMessage());
-                        }
-                    } else {
-                        System.out.printf("  Actual: Exception thrown - %s\n", exception.getMessage());
-                    }
-                    System.out.printf("  Status: ✓ PASSED\n");
-                    passedCount++;
-
-                } else {
-                    // Test case bình thường
-                    double expectedPremium = Double.parseDouble(data.expectedPremium);
-                    double actualPremium = premiumService.calculatePremium(
-                            data.breakdownCover,
-                            data.windscreenRepair,
-                            data.numberOfAccidents,
-                            data.totalMileage,
-                            data.estimatedValue,
-                            data.parkingLocation);
-
-                    System.out.printf("  Expected Premium: £%.2f\n", expectedPremium);
-                    System.out.printf("  Actual Premium:   £%.2f\n", actualPremium);
-
-                    double difference = Math.abs(expectedPremium - actualPremium);
-                    // Cho phép sai số 0.02 để xử lý floating point precision và làm tròn
-                    boolean passed = difference <= 0.02;
-
-                    if (passed) {
-                        System.out.printf("  Status: ✓ PASSED (difference: £%.2f)\n", difference);
-                        passedCount++;
-                    } else {
-                        System.out.printf("  Status: ✗ FAILED (difference: £%.2f)\n", difference);
-                        failedCount++;
-                    }
-
-                    // Sử dụng delta = 0.02 để chấp nhận sai số làm tròn nhỏ
-                    assertEquals(expectedPremium, actualPremium, 0.02,
-                            String.format(
-                                    "Premium mismatch for test case %s: expected £%.2f, got £%.2f (difference: £%.2f)",
-                                    data.testCaseId, expectedPremium, actualPremium, difference));
-                }
-
-            } catch (ValidationException e) {
-                if (!"EXCEPTION".equalsIgnoreCase(data.expectedPremium)) {
-                    failedCount++;
-                    System.out.printf("  Status: ✗ FAILED (Unexpected ValidationException)\n");
-                    if (e.getErrorCount() > 1) {
-                        System.out.printf("  Found %d validation errors:\n", e.getErrorCount());
-                        for (int i = 0; i < e.getErrors().size(); i++) {
-                            System.out.printf("    %d. %s\n", i + 1, e.getErrors().get(i));
-                        }
-                    } else {
-                        System.out.printf("  Error: %s\n", e.getMessage());
-                    }
-                    fail(String.format("Test case %s failed with unexpected ValidationException: %s",
-                            data.testCaseId, e.getMessage()));
-                } else {
-                    // Expected exception
-                    if (e.getErrorCount() > 1) {
-                        System.out.printf("  Actual: ValidationException with %d errors:\n", e.getErrorCount());
-                        for (int i = 0; i < e.getErrors().size(); i++) {
-                            System.out.printf("    %d. %s\n", i + 1, e.getErrors().get(i));
-                        }
-                    } else {
-                        System.out.printf("  Actual: Exception thrown - %s\n", e.getMessage());
-                    }
-                    System.out.printf("  Status: ✓ PASSED\n");
-                    passedCount++;
-                }
-            } catch (Exception e) {
-                if (!"EXCEPTION".equalsIgnoreCase(data.expectedPremium)) {
-                    failedCount++;
-                    System.out.printf("  Status: ✗ FAILED (Unexpected Exception)\n");
-                    System.out.printf("  Error: %s\n", e.getMessage());
-                    fail(String.format("Test case %s failed with unexpected exception: %s",
-                            data.testCaseId, e.getMessage()));
-                }
-            }
-
-            System.out.println();
+            dynamicTests.add(dynamicTest);
             testCaseNumber++;
         }
 
-        // In tổng kết
-        System.out.println("========================================");
-        System.out.println("RESULT SUMMARY:");
-        System.out.println("========================================");
-        System.out.printf("Total test cases: %d\n", testDataList.size());
-        System.out.printf("Passed: %d\n", passedCount);
-        System.out.printf("Failed: %d\n", failedCount);
-        System.out.println("========================================");
+        return dynamicTests;
+    }
 
-        // Assert tổng kết
-        if (failedCount > 0) {
-            System.out.printf("\nTEST FAILED: %d out of %d test cases failed!\n", failedCount, testDataList.size());
-            assertEquals(0, failedCount,
-                    String.format("Expected all tests to pass, but %d test case(s) failed", failedCount));
+    /**
+     * Execute một test case cụ thể
+     */
+    private void executeTestCase(InsuranceTestData data, int testCaseNumber) {
+        System.out.printf("Test Case #%d: %s\n", testCaseNumber, data.testCaseId);
+        System.out.printf("  Description: %s\n", data.testCaseDescription);
+        System.out.printf("  Category: %s\n", data.testCategory);
+        System.out.printf("  Input:\n");
+        System.out.printf("    - Breakdown Cover: %s\n", data.breakdownCover);
+        System.out.printf("    - Windscreen Repair: %s\n", data.windscreenRepair);
+        System.out.printf("    - Number of Accidents: %d\n", data.numberOfAccidents);
+        System.out.printf("    - Total Mileage: %d\n", data.totalMileage);
+        System.out.printf("    - Estimated Value: £%.2f\n", data.estimatedValue);
+        System.out.printf("    - Parking Location: %s\n", data.parkingLocation);
+
+        if ("EXCEPTION".equalsIgnoreCase(data.expectedPremium)) {
+            // Test case mong đợi exception
+            System.out.printf("  Expected: Exception (IllegalArgumentException)\n");
+
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                premiumService.calculatePremium(
+                        data.breakdownCover,
+                        data.windscreenRepair,
+                        data.numberOfAccidents,
+                        data.totalMileage,
+                        data.estimatedValue,
+                        data.parkingLocation);
+            });
+
+            if (exception instanceof ValidationException) {
+                ValidationException ve = (ValidationException) exception;
+                if (ve.getErrorCount() > 1) {
+                    System.out.printf("  Actual: ValidationException with %d errors:\n", ve.getErrorCount());
+                    for (int i = 0; i < ve.getErrors().size(); i++) {
+                        System.out.printf("    %d. %s\n", i + 1, ve.getErrors().get(i));
+                    }
+                } else {
+                    System.out.printf("  Actual: Exception thrown - %s\n", exception.getMessage());
+                }
+            } else {
+                System.out.printf("  Actual: Exception thrown - %s\n", exception.getMessage());
+            }
+            System.out.printf("  Status: ✓ PASSED\n");
+
         } else {
-            System.out.printf("\nALL TESTS PASSED: %d/%d test cases passed!\n", passedCount, testDataList.size());
+            // Test case bình thường
+            double expectedPremium = Double.parseDouble(data.expectedPremium);
+            double actualPremium = premiumService.calculatePremium(
+                    data.breakdownCover,
+                    data.windscreenRepair,
+                    data.numberOfAccidents,
+                    data.totalMileage,
+                    data.estimatedValue,
+                    data.parkingLocation);
+
+            System.out.printf("  Expected Premium: £%.2f\n", expectedPremium);
+            System.out.printf("  Actual Premium:   £%.2f\n", actualPremium);
+
+            double difference = Math.abs(expectedPremium - actualPremium);
+            // Cho phép sai số 0.02 để xử lý floating point precision và làm tròn
+            boolean passed = difference <= 0.02;
+
+            if (passed) {
+                System.out.printf("  Status: ✓ PASSED (difference: £%.2f)\n", difference);
+            } else {
+                System.out.printf("  Status: ✗ FAILED (difference: £%.2f)\n", difference);
+                System.out.printf("  Details: Expected £%.2f, but got £%.2f\n", expectedPremium, actualPremium);
+            }
+
+            // Assert để JUnit báo pass/fail cho test case này
+            assertEquals(expectedPremium, actualPremium, 0.02,
+                    String.format("Premium mismatch for test case %s: expected £%.2f, got £%.2f (difference: £%.2f)",
+                            data.testCaseId, expectedPremium, actualPremium, difference));
         }
-        System.out.println();
     }
 
     /**

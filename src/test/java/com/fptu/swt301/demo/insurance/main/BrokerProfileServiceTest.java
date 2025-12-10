@@ -7,6 +7,8 @@ import com.fptu.swt301.demo.insurance.service.validator.ProfileValidator;
 import com.fptu.swt301.demo.insurance.domain.valueobject.LicenseInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Disabled;
@@ -55,13 +57,15 @@ public class BrokerProfileServiceTest {
     }
 
     /**
-     * Test tất cả các test cases từ CSV file
+     * Test Factory: Tạo dynamic tests từ CSV file
+     * Mỗi test case trong CSV sẽ trở thành một test method riêng biệt
      */
-    @Test
-    @DisplayName("Test Broker Profile from CSV File")
+    @TestFactory
+    @DisplayName("Broker Profile Service - CSV Test Cases")
     @Order(1)
-    public void testBrokerProfileFromCsvFile() {
+    public List<DynamicTest> testBrokerProfileFromCsvFile() {
         List<ProfileTestData> testDataList = readCsvFile("/broker_profile_test_data.csv");
+        List<DynamicTest> dynamicTests = new ArrayList<>();
 
         System.out.println("\n========================================");
         System.out.println("BROKER PROFILE SERVICE TEST");
@@ -69,182 +73,184 @@ public class BrokerProfileServiceTest {
         System.out.println("========================================\n");
 
         int testCaseNumber = 1;
-        int passedCount = 0;
-        int failedCount = 0;
-
         for (ProfileTestData data : testDataList) {
-            // Clear database before each test case to avoid interference
-            profileService.clearAllProfiles();
-            try {
-                System.out.printf("Test Case #%d: %s\n", testCaseNumber, data.testCaseId);
-                System.out.printf("  Description: %s\n", data.testDescription);
-                System.out.printf("  Category: %s\n", data.testCategory);
-                System.out.printf("  Input:\n");
-                System.out.printf("    - User ID: %s\n", data.userId);
-                System.out.printf("    - Name: %s %s %s\n", data.title, data.firstName, data.surname);
-                System.out.printf("    - Phone: %s\n", data.phone);
-                System.out.printf("    - DOB: %s\n", data.dateOfBirth);
-                System.out.printf("    - License: %s (%d years)\n", data.licenseType, data.licensePeriod);
-                System.out.printf("    - Occupation: %s\n", data.occupation);
+            final ProfileTestData testData = data; // final for lambda
+            final int caseNumber = testCaseNumber;
 
-                BrokerProfile profile = createProfileFromData(data);
-                boolean actualResult;
-                String actualMessage = "";
-                String expectedResult = "";
+            // Tạo dynamic test với display name là test case ID
+            DynamicTest dynamicTest = DynamicTest.dynamicTest(
+                    String.format("TC_P%02d: %s - %s", caseNumber, testData.testCaseId, testData.testDescription),
+                    () -> executeTestCase(testData, caseNumber));
 
-                // Auto-determine expected result based on validation logic and test category
-                boolean isValid = isValid(profile);
-
-                // Determine expected result based on test category and validation
-                if (data.testCategory.contains("Update")) {
-                    expectedResult = "UPDATE_SUCCESS";
-                    // First create the profile if it doesn't exist
-                    if (!profileService.profileExists(data.userId)) {
-                        profileService.createProfile(profile);
-                    }
-                    // Test update existing profile
-                    actualResult = profileService.updateProfile(profile);
-                    actualMessage = actualResult ? "Profile updated successfully" : "Failed to update profile";
-                } else if (data.testCategory.contains("Duplicate")) {
-                    expectedResult = "CREATE_FAIL";
-                    // First create the profile
-                    if (!profileService.profileExists(data.userId)) {
-                        profileService.createProfile(profile);
-                    }
-                    // Test create duplicate profile
-                    actualResult = !profileService.createProfile(profile);
-                    actualMessage = actualResult ? "Correctly rejected duplicate"
-                            : "Unexpectedly created duplicate";
-                } else if (isValid) {
-                    expectedResult = "VALID";
-                    // Test create valid profile
-                    try {
-                        actualResult = profileService.createProfile(profile);
-                        actualMessage = actualResult ? "Profile created successfully" : "Failed to create profile";
-
-                        if (actualResult) {
-                            // Verify by viewing
-                            BrokerProfile retrieved = profileService.viewProfile(data.userId);
-                            actualResult = retrieved != null &&
-                                    retrieved.getFirstName().equals(data.firstName) &&
-                                    retrieved.getSurname().equals(data.surname);
-                        }
-                    } catch (ValidationException e) {
-                        actualResult = false;
-                        if (e.getErrorCount() > 1) {
-                            actualMessage = String.format("ValidationException with %d errors:\n", e.getErrorCount());
-                            for (int i = 0; i < e.getErrors().size(); i++) {
-                                actualMessage += String.format("  %d. %s\n", i + 1, e.getErrors().get(i));
-                            }
-                        } else {
-                            actualMessage = "ValidationException: " + e.getMessage();
-                        }
-                    }
-                } else {
-                    expectedResult = "INVALID";
-                    // Test invalid profile - should fail validation
-                    try {
-                        actualResult = profileService.createProfile(profile);
-                        actualResult = false; // Should not reach here
-                        actualMessage = "Unexpectedly accepted invalid profile";
-                    } catch (ValidationException e) {
-                        actualResult = true;
-                        if (e.getErrorCount() > 1) {
-                            actualMessage = String.format("Correctly rejected with %d errors:\n", e.getErrorCount());
-                            for (int i = 0; i < e.getErrors().size(); i++) {
-                                actualMessage += String.format("  %d. %s\n", i + 1, e.getErrors().get(i));
-                            }
-                        } else {
-                            actualMessage = "Correctly rejected: " + e.getMessage();
-                        }
-                    } catch (IllegalArgumentException e) {
-                        actualResult = true;
-                        actualMessage = "Correctly rejected: " + e.getMessage();
-                    }
-                }
-
-                System.out.printf("  Expected: %s (auto-determined from validation)\n", expectedResult);
-                System.out.printf("  Actual: %s\n", actualMessage);
-
-                if (actualResult) {
-                    System.out.printf("  Status: ✓ PASSED\n");
-                    passedCount++;
-                } else {
-                    System.out.printf("  Status: ✗ FAILED\n");
-                    failedCount++;
-                }
-
-                assertTrue(actualResult,
-                        String.format("Test case %s failed: %s", data.testCaseId, actualMessage));
-
-            } catch (ValidationException e) {
-                // Check if profile is invalid - if so, exception is expected
-                BrokerProfile tempProfile = createProfileFromData(data);
-                if (!isValid(tempProfile) && !data.testCategory.contains("Update")
-                        && !data.testCategory.contains("Duplicate")) {
-                    passedCount++;
-                    System.out.printf("  Status: ✓ PASSED (ValidationException expected for invalid profile)\n");
-                    if (e.getErrorCount() > 1) {
-                        System.out.printf("  Found %d validation errors:\n", e.getErrorCount());
-                        for (int i = 0; i < e.getErrors().size(); i++) {
-                            System.out.printf("    %d. %s\n", i + 1, e.getErrors().get(i));
-                        }
-                    } else {
-                        System.out.printf("  Error: %s\n", e.getMessage());
-                    }
-                } else {
-                    failedCount++;
-                    System.out.printf("  Status: ✗ FAILED (Unexpected ValidationException)\n");
-                    if (e.getErrorCount() > 1) {
-                        System.out.printf("  Found %d validation errors:\n", e.getErrorCount());
-                        for (int i = 0; i < e.getErrors().size(); i++) {
-                            System.out.printf("    %d. %s\n", i + 1, e.getErrors().get(i));
-                        }
-                    } else {
-                        System.out.printf("  Error: %s\n", e.getMessage());
-                    }
-                    fail(String.format("Test case %s failed with unexpected ValidationException: %s",
-                            data.testCaseId, e.getMessage()));
-                }
-            } catch (Exception e) {
-                // Check if profile is invalid - if so, exception is expected
-                BrokerProfile tempProfile = createProfileFromData(data);
-                if (!isValid(tempProfile) && !data.testCategory.contains("Update")
-                        && !data.testCategory.contains("Duplicate")) {
-                    passedCount++;
-                    System.out.printf("  Status: ✓ PASSED (Exception expected for invalid profile)\n");
-                } else {
-                    failedCount++;
-                    System.out.printf("  Status: ✗ FAILED (Unexpected Exception)\n");
-                    System.out.printf("  Error: %s\n", e.getMessage());
-                    fail(String.format("Test case %s failed with unexpected exception: %s",
-                            data.testCaseId, e.getMessage()));
-                }
-            }
-
-            System.out.println();
+            dynamicTests.add(dynamicTest);
             testCaseNumber++;
         }
 
-        // Print summary
-        System.out.println("========================================");
-        System.out.println("RESULT SUMMARY:");
-        System.out.println("========================================");
-        System.out.printf("Total test cases: %d\n", testDataList.size());
-        System.out.printf("Passed: %d\n", passedCount);
-        System.out.printf("Failed: %d\n", failedCount);
-        System.out.println("========================================");
+        return dynamicTests;
+    }
 
-        if (failedCount > 0) {
-            System.out.printf("\nTEST FAILED: %d out of %d test cases failed!\n",
-                    failedCount, testDataList.size());
-            assertEquals(0, failedCount,
-                    String.format("Expected all tests to pass, but %d test case(s) failed", failedCount));
-        } else {
-            System.out.printf("\nALL TESTS PASSED: %d/%d test cases passed!\n",
-                    passedCount, testDataList.size());
+    /**
+     * Execute một test case cụ thể
+     */
+    private void executeTestCase(ProfileTestData data, int testCaseNumber) {
+        // Clear database before each test case to avoid interference
+        profileService.clearAllProfiles();
+        try {
+            System.out.printf("Test Case #%d: %s\n", testCaseNumber, data.testCaseId);
+            System.out.printf("  Description: %s\n", data.testDescription);
+            System.out.printf("  Category: %s\n", data.testCategory);
+            System.out.printf("  Input:\n");
+            System.out.printf("    - User ID: %s\n", data.userId);
+            System.out.printf("    - Name: %s %s %s\n", data.title, data.firstName, data.surname);
+            System.out.printf("    - Phone: %s\n", data.phone);
+            System.out.printf("    - DOB: %s\n", data.dateOfBirth);
+            System.out.printf("    - License: %s (%d years)\n", data.licenseType, data.licensePeriod);
+            System.out.printf("    - Occupation: %s\n", data.occupation);
+
+            BrokerProfile profile = createProfileFromData(data);
+            boolean actualResult;
+            String actualMessage = "";
+            String expectedResult = "";
+
+            // Auto-determine expected result based on validation logic and test category
+            boolean isValid = isValid(profile);
+
+            // Determine expected result based on test category and validation
+            if (data.testCategory.contains("Update")) {
+                expectedResult = "UPDATE_SUCCESS";
+                // First create the profile if it doesn't exist
+                if (!profileService.profileExists(data.userId)) {
+                    profileService.createProfile(profile);
+                }
+                // Test update existing profile
+                actualResult = profileService.updateProfile(profile);
+                actualMessage = actualResult ? "Profile updated successfully" : "Failed to update profile";
+            } else if (data.testCategory.contains("Duplicate")) {
+                expectedResult = "CREATE_FAIL";
+                // First create the profile
+                if (!profileService.profileExists(data.userId)) {
+                    profileService.createProfile(profile);
+                }
+                // Test create duplicate profile
+                actualResult = !profileService.createProfile(profile);
+                actualMessage = actualResult ? "Correctly rejected duplicate"
+                        : "Unexpectedly created duplicate";
+            } else if (isValid) {
+                expectedResult = "VALID";
+                // Test create valid profile
+                try {
+                    actualResult = profileService.createProfile(profile);
+                    actualMessage = actualResult ? "Profile created successfully" : "Failed to create profile";
+
+                    if (actualResult) {
+                        // Verify by viewing
+                        BrokerProfile retrieved = profileService.viewProfile(data.userId);
+                        actualResult = retrieved != null &&
+                                retrieved.getFirstName().equals(data.firstName) &&
+                                retrieved.getSurname().equals(data.surname);
+                    }
+                } catch (ValidationException e) {
+                    actualResult = false;
+                    if (e.getErrorCount() > 1) {
+                        actualMessage = String.format("ValidationException with %d errors:\n", e.getErrorCount());
+                        for (int i = 0; i < e.getErrors().size(); i++) {
+                            actualMessage += String.format("  %d. %s\n", i + 1, e.getErrors().get(i));
+                        }
+                    } else {
+                        actualMessage = "ValidationException: " + e.getMessage();
+                    }
+                }
+            } else {
+                expectedResult = "INVALID";
+                // Test invalid profile - should fail validation
+                try {
+                    actualResult = profileService.createProfile(profile);
+                    actualResult = false; // Should not reach here
+                    actualMessage = "Unexpectedly accepted invalid profile";
+                } catch (ValidationException e) {
+                    actualResult = true;
+                    if (e.getErrorCount() > 1) {
+                        actualMessage = String.format("Correctly rejected with %d errors:\n", e.getErrorCount());
+                        for (int i = 0; i < e.getErrors().size(); i++) {
+                            actualMessage += String.format("  %d. %s\n", i + 1, e.getErrors().get(i));
+                        }
+                    } else {
+                        actualMessage = "Correctly rejected: " + e.getMessage();
+                    }
+                } catch (IllegalArgumentException e) {
+                    actualResult = true;
+                    actualMessage = "Correctly rejected: " + e.getMessage();
+                }
+            }
+
+            System.out.printf("  Expected: %s (auto-determined from validation)\n", expectedResult);
+            System.out.printf("  Actual: %s\n", actualMessage);
+
+            if (actualResult) {
+                System.out.printf("  Status: ✓ PASSED\n");
+            } else {
+                System.out.printf("  Status: ✗ FAILED\n");
+                System.out.printf("  Details: %s\n", actualMessage);
+            }
+
+            // Assert để JUnit báo pass/fail cho test case này
+            assertTrue(actualResult,
+                    String.format("Test case %s failed: %s", data.testCaseId, actualMessage));
+
+        } catch (ValidationException e) {
+            // Check if profile is invalid - if so, exception is expected
+            BrokerProfile tempProfile = createProfileFromData(data);
+            if (!isValid(tempProfile) && !data.testCategory.contains("Update")
+                    && !data.testCategory.contains("Duplicate")) {
+                System.out.printf("  Status: ✓ PASSED (ValidationException expected for invalid profile)\n");
+                if (e.getErrorCount() > 1) {
+                    System.out.printf("  Found %d validation errors:\n", e.getErrorCount());
+                    for (int i = 0; i < e.getErrors().size(); i++) {
+                        System.out.printf("    %d. %s\n", i + 1, e.getErrors().get(i));
+                    }
+                } else {
+                    System.out.printf("  Error: %s\n", e.getMessage());
+                }
+                // Expected exception, test passes
+            } else {
+                System.out.printf("  Status: ✗ FAILED (Unexpected ValidationException)\n");
+                if (e.getErrorCount() > 1) {
+                    System.out.printf("  Found %d validation errors:\n", e.getErrorCount());
+                    for (int i = 0; i < e.getErrors().size(); i++) {
+                        System.out.printf("    %d. %s\n", i + 1, e.getErrors().get(i));
+                    }
+                } else {
+                    System.out.printf("  Error: %s\n", e.getMessage());
+                }
+                fail(String.format("Test case %s failed with unexpected ValidationException: %s",
+                        data.testCaseId, e.getMessage()));
+            }
+        } catch (Exception e) {
+            // Check if profile is invalid - if so, exception is expected
+            BrokerProfile tempProfile = createProfileFromData(data);
+            if (!isValid(tempProfile) && !data.testCategory.contains("Update")
+                    && !data.testCategory.contains("Duplicate")) {
+                System.out.printf("  Status: ✓ PASSED (Exception expected for invalid profile)\n");
+                if (e instanceof ValidationException) {
+                    ValidationException ve = (ValidationException) e;
+                    if (ve.getErrorCount() > 1) {
+                        System.out.printf("  Found %d validation errors:\n", ve.getErrorCount());
+                        for (int i = 0; i < ve.getErrors().size(); i++) {
+                            System.out.printf("    %d. %s\n", i + 1, ve.getErrors().get(i));
+                        }
+                    }
+                }
+                // Expected exception, test passes
+            } else {
+                System.out.printf("  Status: ✗ FAILED (Unexpected Exception)\n");
+                System.out.printf("  Error: %s\n", e.getMessage());
+                if (e.getCause() != null) {
+                    System.out.printf("  Cause: %s\n", e.getCause().getMessage());
+                }
+                fail(String.format("Test case %s failed with unexpected exception: %s",
+                        data.testCaseId, e.getMessage()));
+            }
         }
-        System.out.println();
     }
 
     /**
@@ -274,15 +280,15 @@ public class BrokerProfileServiceTest {
         } catch (Exception e) {
             // Will be validated later
             builder.licenseType(data.licenseType)
-                   .licensePeriod(data.licensePeriod);
+                    .licensePeriod(data.licensePeriod);
         }
 
         // Address
         if (data.street != null || data.city != null || data.county != null || data.postCode != null) {
             builder.street(data.street)
-                   .city(data.city)
-                   .county(data.county)
-                   .postCode(data.postCode);
+                    .city(data.city)
+                    .county(data.county)
+                    .postCode(data.postCode);
         }
 
         return builder.build();
@@ -531,4 +537,3 @@ public class BrokerProfileServiceTest {
         }
     }
 }
-
