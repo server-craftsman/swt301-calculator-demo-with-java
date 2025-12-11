@@ -46,7 +46,7 @@ public class InsurancePremiumCalculatorTest {
     @DisplayName("Insurance Premium Calculator - CSV Test Cases")
     @Order(1)
     public List<DynamicTest> testInsurancePremiumFromCsvFile() {
-        List<InsuranceTestData> testDataList = readCsvFile("/insurance_premium_test_data.csv");
+        List<InsuranceTestData> testDataList = readCsvFile("/insurance/insurance_premium_test_data.csv");
         List<DynamicTest> dynamicTests = new ArrayList<>();
 
         System.out.println("\n========================================");

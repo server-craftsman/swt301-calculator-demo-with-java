@@ -64,7 +64,7 @@ public class BrokerProfileServiceTest {
     @DisplayName("Broker Profile Service - CSV Test Cases")
     @Order(1)
     public List<DynamicTest> testBrokerProfileFromCsvFile() {
-        List<ProfileTestData> testDataList = readCsvFile("/broker_profile_test_data.csv");
+        List<ProfileTestData> testDataList = readCsvFile("/insurance/broker_profile_test_data.csv");
         List<DynamicTest> dynamicTests = new ArrayList<>();
 
         System.out.println("\n========================================");

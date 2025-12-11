@@ -22,7 +22,7 @@ public class CalculatorCsvTest {
      */
     @Test
     public void testCalculatorFromCsvFile() {
-        List<TestData> testDataList = readCsvFile("/calculator_test_data.csv");
+        List<TestData> testDataList = readCsvFile("/calculator/calculator_test_data.csv");
 
         System.out.println("\n========================================");
         System.out.println("Start testing calculator from CSV file");
