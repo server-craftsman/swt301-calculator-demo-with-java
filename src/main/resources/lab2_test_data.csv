@@ -1,0 +1,73 @@
+testCaseId,testCaseDescription,swimmingStyle,durationMin,bodyWeightKg,expectedResultWeb,testCategory,notes
+TC01,Giá trị biên: BodyWeight = 0 (Invalid),Butterfly,30.0,0.0,EXCEPTION,Boundary Value - Invalid,Body weight cannot be 0
+TC02,Giá trị biên: BodyWeight = 0.1 (Valid - Min),Butterfly,30.0,0.1,0.72,Boundary Value - Valid Min,Minimum valid body weight
+TC03,Giá trị biên: BodyWeight = 50 (Normal),Butterfly,30.0,50.0,362.25,Boundary Value - Normal,Average body weight for testing
+TC04,Giá trị biên: BodyWeight = 70 (Standard),Butterfly,30.0,70.0,507.15,Boundary Value - Standard,Standard adult body weight
+TC05,Giá trị biên: BodyWeight = 100 (High),Butterfly,30.0,100.0,724.50,Boundary Value - High,High body weight
+TC06,Giá trị biên: BodyWeight = 500 (Max),Butterfly,30.0,500.0,3622.50,Boundary Value - Max,Maximum valid body weight
+TC07,Giá trị biên: Duration = 0 (Invalid),Butterfly,0.0,70.0,EXCEPTION,Boundary Value - Invalid,Duration cannot be 0
+TC08,Giá trị biên: Duration = 0.01 (Valid - Min),Butterfly,0.01,70.0,0.17,Boundary Value - Valid Min,Minimum valid duration
+TC09,Giá trị biên: Duration = 1 (Min normal),Butterfly,1.0,70.0,16.91,Boundary Value - Min Normal,1 minute swim
+TC10,Giá trị biên: Duration = 30 (Standard),Butterfly,30.0,70.0,507.15,Boundary Value - Standard,30 minutes standard swim
+TC11,Giá trị biên: Duration = 60 (1 hour),Butterfly,60.0,70.0,1014.30,Boundary Value - 1 Hour,1 hour swim session
+TC12,Giá trị biên: Duration = 1000 (Max),Butterfly,1000.0,70.0,16905.00,Boundary Value - Max,Maximum valid duration
+TC13,Phân vùng: Backstroke intense - High MET,Backstroke (intense),30.0,70.0,349.13,Equivalence Partitioning - High Intensity,High intensity backstroke
+TC14,Phân vùng: Backstroke recreational - Low MET,Backstroke (recreational),30.0,70.0,176.40,Equivalence Partitioning - Low Intensity,Recreational backstroke
+TC15,Phân vùng: Breaststroke intense - High MET,Breaststroke (intense),30.0,70.0,378.53,Equivalence Partitioning - High Intensity,High intensity breaststroke
+TC16,Phân vùng: Breaststroke recreational - Low MET,Breaststroke (recreational),30.0,70.0,194.78,Equivalence Partitioning - Low Intensity,Recreational breaststroke
+TC17,Phân vùng: Butterfly - Highest MET,Butterfly,30.0,70.0,507.15,Equivalence Partitioning - Highest MET,Butterfly stroke - highest calorie burn
+TC18,Phân vùng: Crawl intense - High MET,Crawl (intense),30.0,70.0,367.50,Equivalence Partitioning - High Intensity,High intensity crawl/freestyle
+TC19,Phân vùng: Crawl recreational - Medium MET,Crawl (recreational),30.0,70.0,305.03,Equivalence Partitioning - Medium Intensity,Recreational crawl/freestyle
+TC20,Phân vùng: Sidestroke - Medium MET,Sidestroke,30.0,70.0,257.25,Equivalence Partitioning - Medium Intensity,Sidestroke swimming
+TC21,Phân vùng: Treading water high effort - High MET,Treading water (high effort),30.0,70.0,360.15,Equivalence Partitioning - High Intensity,High effort treading water
+TC22,Phân vùng: Treading water relaxed - Low MET,Treading water (relaxed),30.0,70.0,128.63,Equivalence Partitioning - Low Intensity,Relaxed treading water
+TC23,Phân vùng: Water aerobics - Low MET,Water aerobics and calisthenics,30.0,70.0,202.13,Equivalence Partitioning - Low Intensity,Water aerobics activity
+TC24,Phân vùng: Aqua jogging - High MET,Aqua jogging,30.0,70.0,360.15,Equivalence Partitioning - High Intensity,Aqua jogging exercise
+TC25,Phân vùng: Water walking high effort - Medium MET,Water walking (high effort),30.0,70.0,249.90,Equivalence Partitioning - Medium Intensity,High effort water walking
+TC26,Phân vùng: Water walking relaxed - Low MET,Water walking (relaxed),30.0,70.0,165.38,Equivalence Partitioning - Low Intensity,Relaxed water walking
+TC27,Kết hợp: High MET + High weight + Long duration,Butterfly,60.0,100.0,1449.00,Combination - Maximum,Maximum calorie burn scenario
+TC28,Kết hợp: Low MET + Low weight + Short duration,Treading water (relaxed),10.0,50.0,30.63,Combination - Minimum,Minimum calorie burn scenario
+TC29,Kết hợp: Medium MET + Standard weight + Standard duration,Crawl (recreational),30.0,70.0,305.03,Combination - Standard,Standard workout scenario
+TC30,Extreme: Very long duration + High MET,Butterfly,120.0,70.0,2028.60,Extreme Case - Long Duration,2 hour butterfly swim
+TC31,Extreme: Very high weight + High MET,Butterfly,30.0,150.0,1086.75,Extreme Case - High Weight,High body weight swimmer
+TC32,Extreme: All maximum values,Butterfly,120.0,150.0,4347.00,Extreme Case - Maximum,Maximum values combination
+
+# ============================================================================================
+# GHI CHÚ PHÂN TÍCH TEST CASES
+# ============================================================================================
+# 
+# 1. BOUNDARY VALUE ANALYSIS (BVA):
+#    - BodyWeight: 0 (Invalid), 0.1 (Min), 50 (Normal), 70 (Standard), 100 (High), 500 (Max)
+#    - Duration: 0 (Invalid), 0.01 (Min), 1 (Min normal), 30 (Standard), 60 (1 hour), 1000 (Max)
+#
+# 2. EQUIVALENCE PARTITIONING (EP):
+#    - Swimming Styles theo MET values:
+#      * High MET (>=9.5): Butterfly (13.8), Breaststroke intense (10.3), Crawl intense (10.0), 
+#        Backstroke intense (9.5), Treading water high effort (9.8), Aqua jogging (9.8)
+#      * Medium MET (7.0-8.3): Crawl recreational (8.3), Sidestroke (7.0), Water walking high effort (6.8)
+#      * Low MET (<6.0): Backstroke recreational (4.8), Breaststroke recreational (5.3),
+#        Water aerobics (5.5), Treading water relaxed (3.5), Water walking relaxed (4.5)
+#
+# 3. COMBINATION TESTING:
+#    - Kết hợp các yếu tố: MET level, body weight, duration
+#    - Maximum scenario: High MET + High weight + Long duration
+#    - Minimum scenario: Low MET + Low weight + Short duration
+#    - Standard scenario: Medium MET + Standard weight + Standard duration
+#
+# 4. EXTREME CASES:
+#    - Very long duration (120 minutes)
+#    - Very high weight (150 kg)
+#    - Maximum values combination
+#
+# 5. CÔNG THỨC TÍNH TOÁN:
+#    - Calories per minute = (MET × bodyWeightKg × 3.5) / 200
+#    - Total calories burned = Calories per minute × durationMin
+#    - Kết quả làm tròn đến 2 chữ số thập phân
+#
+# 6. GHI CHÚ VỀ EXPECTED VALUES:
+#    - Các giá trị expectedResultWeb được tính toán dựa trên công thức chuẩn
+#    - Có thể đối chiếu với web calculator: https://www.omnicalculator.com/sports/swimming-calorie
+#    - Một số test cases có thể có sự khác biệt nhỏ do cách làm tròn của web calculator
+#
+# ============================================================================================
+
