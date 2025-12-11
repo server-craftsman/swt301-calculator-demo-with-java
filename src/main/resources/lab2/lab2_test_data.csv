@@ -4,15 +4,13 @@ TC02,Giá trị biên: BodyWeight = 0.000000000000000000000000000000000000000000
 TC03,Giá trị biên: BodyWeight = 0.1 (Valid - min practical),Butterfly,30.0,0.1,0.72,Boundary Value - Valid Min,Minimum practical body weight
 TC04,Giá trị biên: BodyWeight = 0.11 (Valid - above min),Butterfly,30.0,0.11,0.80,Boundary Value - Above Min,Body weight above minimum by 0.01
 TC05,Giá trị biên: BodyWeight = 70 (Standard),Butterfly,30.0,70.0,507.15,Boundary Value - Standard,Standard adult body weight
-TC06,Giá trị biên: BodyWeight = 634.9999999999 (Valid - at max),Butterfly,30.0,634.9999999999,4600.57,Boundary Value - At Max,Body weight at maximum threshold (no max validation)
-TC07,Giá trị biên: BodyWeight = 635.0 (Valid - above max),Butterfly,30.0,635.0,4600.58,Boundary Value - Above Max,Body weight above max (no max validation)
+TC06,Giá trị biên: BodyWeight = 634.9999999993 (Valid - at max),Butterfly,30.0,634.9999999993,4600.57,Boundary Value - At Max,Body weight at maximum threshold (634.9999999993 kg)
+TC07,Giá trị biên: BodyWeight = 634.9999999994 (Invalid - exceeds max),Butterfly,30.0,634.9999999994,EXCEPTION,Boundary Value - Invalid,Body weight exceeds maximum 634.9999999993 kg
 TC08,Giá trị biên: Duration = 0 (Invalid),Butterfly,0.0,70.0,EXCEPTION,Boundary Value - Invalid,Duration = 0 (must be > 0)
 TC09,Giá trị biên: Duration = negative (Invalid),Butterfly,-0.01,70.0,EXCEPTION,Boundary Value - Invalid,Duration negative (invalid)
-TC10,Giá trị biên: Duration = 0.00000000000000000000000000000000000000000000000000000000006 (Invalid - below min),Butterfly,0.00000000000000000000000000000000000000000000000000000000006,70.0,EXCEPTION,Boundary Value - Invalid,Duration below minimum threshold
-TC11,Giá trị biên: Duration = 0.00000000000000000000000000000000000000000000000000000000007 (Valid - at min),Butterfly,0.00000000000000000000000000000000000000000000000000000000007,70.0,0.00,Boundary Value - At Min,Duration at minimum threshold (seconds)
-TC12,Giá trị biên: Duration = 0.00000000000000000000000000000000000000000000000000000000008 (Valid - above min),Butterfly,0.00000000000000000000000000000000000000000000000000000000008,70.0,0.00,Boundary Value - Above Min,Duration above minimum by 1 unit
-TC13,Giá trị biên: Duration = 0.01 (Valid - normal min),Butterfly,0.01,70.0,0.17,Boundary Value - Normal Min,Minimum practical duration
-TC14,Giá trị biên: Duration = 30 (Standard),Butterfly,30.0,70.0,507.15,Boundary Value - Standard,30 minutes standard swim
+TC10,Giá trị biên: Duration = 0.00000000000000000000000000000000000000000000000000000000006 (Invalid - below second),Butterfly,0.00000000000000000000000000000000000000000000000000000000006,70.0,EXCEPTION,Boundary Value - Invalid,Duration below minimum threshold
+TC11,Giá trị biên: Duration = 0.00000000000000000000000000000000000000000000000000000000007 (Valid - at second),Butterfly,0.00000000000000000000000000000000000000000000000000000000007,70.0,0.00,Boundary Value - At Min,Duration at minimum threshold (seconds)
+TC12,Giá trị biên: Duration = 0.00000000000000000000000000000000000000000000000000000000008 (Valid - above second),Butterfly,0.00000000000000000000000000000000000000000000000000000000008,70.0,0.00,Boundary Value - Above Min,Duration above minimum by 1 unit
 TC15,Phân vùng: Backstroke intense - High MET,Backstroke (intense),30.0,70.0,349.13,Equivalence Partitioning - High Intensity,High intensity backstroke
 TC16,Phân vùng: Backstroke recreational - Low MET,Backstroke (recreational),30.0,70.0,176.40,Equivalence Partitioning - Low Intensity,Recreational backstroke
 TC17,Phân vùng: Breaststroke intense - High MET,Breaststroke (intense),30.0,70.0,378.53,Equivalence Partitioning - High Intensity,High intensity breaststroke

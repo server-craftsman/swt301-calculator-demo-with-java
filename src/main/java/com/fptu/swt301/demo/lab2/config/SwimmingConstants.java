@@ -31,9 +31,9 @@ public final class SwimmingConstants {
 
     /**
      * Giá trị cân nặng tối đa hợp lý (kg)
-     * Giới hạn theo web production: tối đa 500 kg
+     * Giới hạn: tối đa 634.9999999993 kg
      */
-    public static final double MAX_BODY_WEIGHT_KG = 634.9999999999;
+    public static final double MAX_BODY_WEIGHT_KG = 634.9999999993;
 
     /**
      * Thời gian tối thiểu (phút)

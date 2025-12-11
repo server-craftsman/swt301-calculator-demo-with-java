@@ -59,14 +59,13 @@ public class CalorieCalculationRequest {
                     bodyWeightKg));
         }
 
-        // Không validate maximum - web production không có giới hạn max
-        // if (bodyWeightKg > SwimmingConstants.MAX_BODY_WEIGHT_KG) {
-        // errors.add(String.format("Body weight cannot exceed %.0f kg (web production
-        // limit). " +
-        // "Provided value: %.10f kg. Please enter a value between %.2f and %.0f kg.",
-        // SwimmingConstants.MAX_BODY_WEIGHT_KG, bodyWeightKg,
-        // SwimmingConstants.MIN_BODY_WEIGHT_KG, SwimmingConstants.MAX_BODY_WEIGHT_KG));
-        // }
+        // Validate maximum - body weight không được vượt quá 634.9999999993 kg
+        if (bodyWeightKg > SwimmingConstants.MAX_BODY_WEIGHT_KG) {
+            errors.add(String.format("Body weight cannot exceed %.10f kg. Provided value: %.10f kg. " +
+                    "Please enter a value between %.2f and %.10f kg.",
+                    SwimmingConstants.MAX_BODY_WEIGHT_KG, bodyWeightKg,
+                    SwimmingConstants.MIN_BODY_WEIGHT_KG, SwimmingConstants.MAX_BODY_WEIGHT_KG));
+        }
 
         // Validation cho Duration
         if (durationMin < 0.0) {
