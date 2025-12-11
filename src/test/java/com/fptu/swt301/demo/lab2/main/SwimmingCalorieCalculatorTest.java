@@ -1,6 +1,7 @@
 package com.fptu.swt301.demo.lab2.main;
 
 import com.fptu.swt301.demo.lab2.service.SwimmingCalorieService;
+import com.fptu.swt301.demo.lab2.domain.model.CalorieCalculationRequest;
 import com.fptu.swt301.demo.lab2.exception.ValidationException;
 
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +42,7 @@ public class SwimmingCalorieCalculatorTest {
     @BeforeEach
     void setUp() {
         calorieService = new SwimmingCalorieService();
-        testDataList = readCsvFile("/lab2_test_data.csv");
+        testDataList = readCsvFile("/lab2/lab2_test_data.csv");
         System.out.println("\n========================================");
         System.out.println("SWIMMING CALORIE CALCULATOR TEST");
         System.out.println("Total test cases: " + testDataList.size());
@@ -85,35 +86,54 @@ public class SwimmingCalorieCalculatorTest {
                                     ValidationException validationException = (ValidationException) exception;
                                     if (validationException.getErrorCount() > 1) {
                                         System.out.printf("  Errors (%d):\n", validationException.getErrorCount());
-                                        validationException.getErrors().forEach(error -> 
-                                            System.out.printf("    - %s\n", error));
+                                        validationException.getErrors()
+                                                .forEach(error -> System.out.printf("    - %s\n", error));
                                     }
                                 }
                                 System.out.printf("  Status: ✓ PASSED\n");
                             } else {
                                 // Expected normal calculation
                                 double expectedCalories = Double.parseDouble(data.expectedResultWeb);
+
+                                // Lấy giá trị chính xác (không làm tròn) để hiển thị
+                                CalorieCalculationRequest request = CalorieCalculationRequest.builder()
+                                        .swimmingStyle(data.swimmingStyle)
+                                        .durationMin(data.durationMin)
+                                        .bodyWeightKg(data.bodyWeightKg)
+                                        .build();
+
+                                // Lấy giá trị exact từ service
+                                double actualCaloriesExact = calorieService.calculateCaloriesBurnedExact(request);
                                 double actualCalories = calorieService.calculateCaloriesBurned(
                                         data.swimmingStyle,
                                         data.durationMin,
                                         data.bodyWeightKg);
 
-                                System.out.printf("  Expected Calories: %.2f kcal\n", expectedCalories);
-                                System.out.printf("  Actual Calories:   %.2f kcal\n", actualCalories);
+                                // Tính calories per minute exact
+                                double caloriesPerMinExact = calorieService.calculateCaloriesPerMinuteExact(request);
+                                double caloriesPerMin = calorieService.calculateCaloriesPerMinute(request);
 
-                                // Tính calories per minute để hiển thị thêm thông tin
-                                double caloriesPerMin = (actualCalories / data.durationMin);
-                                System.out.printf("  Calories per minute: %.2f kcal/min\n", caloriesPerMin);
+                                // Hiển thị với nhiều chữ số thập phân (không làm tròn)
+                                System.out.printf("  Expected Calories: %.10f kcal (from CSV: %.2f)\n",
+                                        expectedCalories, expectedCalories);
+                                System.out.printf("  Actual Calories (exact):   %.10f kcal\n", actualCaloriesExact);
+                                System.out.printf("  Actual Calories (rounded): %.2f kcal\n", actualCalories);
+                                System.out.printf("  Calories per minute (exact):   %.10f kcal/min\n",
+                                        caloriesPerMinExact);
+                                System.out.printf("  Calories per minute (rounded): %.2f kcal/min\n", caloriesPerMin);
 
+                                // So sánh với giá trị rounded (để khớp với test cases)
                                 double difference = Math.abs(expectedCalories - actualCalories);
                                 // Cho phép sai số nhỏ do làm tròn (0.01 kcal)
                                 if (difference <= 0.02) {
-                                    System.out.printf("  Status: ✓ PASSED (difference: %.2f kcal)\n", difference);
+                                    System.out.printf("  Status: ✓ PASSED (difference: %.10f kcal)\n", difference);
                                 } else {
-                                    System.out.printf("  Status: ✗ FAILED (difference: %.2f kcal)\n", difference);
-                                    System.out.printf("  Details: Expected %.2f kcal, but got %.2f kcal (difference: %.2f kcal)\n", 
+                                    System.out.printf("  Status: ✗ FAILED (difference: %.10f kcal)\n", difference);
+                                    System.out.printf(
+                                            "  Details: Expected %.2f kcal, but got %.2f kcal (difference: %.10f kcal)\n",
                                             expectedCalories, actualCalories, difference);
-                                    fail(String.format("Calories burned mismatch for test case %s: expected %.2f kcal, got %.2f kcal (difference: %.2f kcal)",
+                                    fail(String.format(
+                                            "Calories burned mismatch for test case %s: expected %.2f kcal, got %.2f kcal (difference: %.10f kcal)",
                                             data.testCaseId, expectedCalories, actualCalories, difference));
                                 }
                             }
@@ -145,8 +165,7 @@ public class SwimmingCalorieCalculatorTest {
                             }
                         }
                         System.out.println();
-                    }
-            ));
+                    }));
         }
         return dynamicTests;
     }
@@ -249,4 +268,3 @@ public class SwimmingCalorieCalculatorTest {
         String notes;
     }
 }
-

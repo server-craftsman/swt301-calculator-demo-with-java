@@ -71,6 +71,45 @@ public class SwimmingCalorieDemo {
             System.out.println("Validation error: " + e.getMessage());
         }
 
+        // Demo 7: Repository pattern - History tracking
+        System.out.println("\n--- Demo 7: Repository Pattern - Calculation History ---");
+        service.clearHistory(); // Clear previous history
+        service.calculateCaloriesBurned("Butterfly", 30.0, 70.0);
+        service.calculateCaloriesBurned("Crawl (recreational)", 45.0, 65.0);
+        service.calculateCaloriesBurned("Water aerobics and calisthenics", 60.0, 60.0);
+        
+        System.out.println("Total calculations performed: " + service.getCalculationCount());
+        System.out.println("Calculation History:");
+        service.getCalculationHistory().forEach(history -> 
+            System.out.println("  " + history.toString()));
+
+        // Demo 8: Formatted output (giống web production)
+        System.out.println("\n--- Demo 8: Formatted Output (Web Production Style) ---");
+        try {
+            CalorieCalculationRequest request1 = CalorieCalculationRequest.builder()
+                    .swimmingStyle(SwimmingStyle.BUTTERFLY)
+                    .durationMin(0.01)
+                    .bodyWeightKg(70.0)
+                    .build();
+
+            double caloriesPerMin = service.calculateCaloriesPerMinute(request1);
+            double totalCalories = service.calculateCaloriesBurned(request1);
+
+            System.out.println("Input: Butterfly, 0.01 min, 70 kg");
+            System.out.println("You're burning: " + 
+                    service.calculateCaloriesPerMinuteFormatted(request1, true) + 
+                    " (European format: " + service.calculateCaloriesPerMinuteFormatted(request1, true) + ")");
+            System.out.println("If you swim for: 0.01 min");
+            System.out.println("... you will burn: " + 
+                    service.calculateCaloriesBurnedDetailedFormatted(request1, true) + 
+                    " (European format: " + service.calculateCaloriesBurnedDetailedFormatted(request1, true) + ")");
+            System.out.println("\nRaw values (for comparison):");
+            System.out.println("  Calories per minute: " + caloriesPerMin + " kcal/min");
+            System.out.println("  Total calories: " + totalCalories + " kcal");
+        } catch (ValidationException e) {
+            System.out.println("Validation error: " + e.getMessage());
+        }
+
         System.out.println("\n========================================");
         System.out.println("DEMO COMPLETED");
         System.out.println("========================================");
