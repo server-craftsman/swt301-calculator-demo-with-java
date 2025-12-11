@@ -14,8 +14,8 @@ import java.util.Locale;
  */
 public class CalorieFormatter {
 
-    private static final DecimalFormat DECIMAL_FORMAT_2 = new DecimalFormat("#.##");
-    private static final DecimalFormat DECIMAL_FORMAT_5 = new DecimalFormat("#.#####");
+    private static final DecimalFormat DECIMAL_FORMAT_2 = new DecimalFormat("0.00");
+    private static final DecimalFormat DECIMAL_FORMAT_5 = new DecimalFormat("0.#####");
 
     // Format với dấu phẩy (European format) - giống web production
     private static final DecimalFormat DECIMAL_FORMAT_EUROPEAN_2;
@@ -26,8 +26,8 @@ public class CalorieFormatter {
         symbols.setDecimalSeparator(',');
         symbols.setGroupingSeparator('.');
 
-        DECIMAL_FORMAT_EUROPEAN_2 = new DecimalFormat("#,##", symbols);
-        DECIMAL_FORMAT_EUROPEAN_5 = new DecimalFormat("#,#####", symbols);
+        DECIMAL_FORMAT_EUROPEAN_2 = new DecimalFormat("0.00", symbols);
+        DECIMAL_FORMAT_EUROPEAN_5 = new DecimalFormat("0.#####", symbols);
     }
 
     /**
