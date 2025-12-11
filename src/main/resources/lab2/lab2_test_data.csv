@@ -11,23 +11,23 @@ TC09,Giá trị biên: Duration = negative (Invalid),Butterfly,-0.01,70.0,EXCEPT
 TC10,Giá trị biên: Duration = 0.00000000000000000000000000000000000000000000000000000000006 (Invalid - below second),Butterfly,0.00000000000000000000000000000000000000000000000000000000006,70.0,EXCEPTION,Boundary Value - Invalid,Duration below minimum threshold
 TC11,Giá trị biên: Duration = 0.00000000000000000000000000000000000000000000000000000000007 (Valid - at second),Butterfly,0.00000000000000000000000000000000000000000000000000000000007,70.0,0.00,Boundary Value - At Min,Duration at minimum threshold (seconds)
 TC12,Giá trị biên: Duration = 0.00000000000000000000000000000000000000000000000000000000008 (Valid - above second),Butterfly,0.00000000000000000000000000000000000000000000000000000000008,70.0,0.00,Boundary Value - Above Min,Duration above minimum by 1 unit
-TC15,Phân vùng: Backstroke intense - High MET,Backstroke (intense),30.0,70.0,349.13,Equivalence Partitioning - High Intensity,High intensity backstroke
-TC16,Phân vùng: Backstroke recreational - Low MET,Backstroke (recreational),30.0,70.0,176.40,Equivalence Partitioning - Low Intensity,Recreational backstroke
-TC17,Phân vùng: Breaststroke intense - High MET,Breaststroke (intense),30.0,70.0,378.53,Equivalence Partitioning - High Intensity,High intensity breaststroke
-TC18,Phân vùng: Breaststroke recreational - Low MET,Breaststroke (recreational),30.0,70.0,194.78,Equivalence Partitioning - Low Intensity,Recreational breaststroke
-TC19,Phân vùng: Butterfly - Highest MET,Butterfly,30.0,70.0,507.15,Equivalence Partitioning - Highest MET,Butterfly stroke - highest calorie burn
-TC20,Phân vùng: Crawl intense - High MET,Crawl (intense),30.0,70.0,367.50,Equivalence Partitioning - High Intensity,High intensity crawl/freestyle
-TC21,Phân vùng: Crawl recreational - Medium MET,Crawl (recreational),30.0,70.0,305.03,Equivalence Partitioning - Medium Intensity,Recreational crawl/freestyle
-TC22,Phân vùng: Sidestroke - Medium MET,Sidestroke,30.0,70.0,257.25,Equivalence Partitioning - Medium Intensity,Sidestroke swimming
-TC23,Phân vùng: Treading water high effort - High MET,Treading water (high effort),30.0,70.0,360.15,Equivalence Partitioning - High Intensity,High effort treading water
-TC24,Phân vùng: Treading water relaxed - Low MET,Treading water (relaxed),30.0,70.0,128.63,Equivalence Partitioning - Low Intensity,Relaxed treading water
-TC25,Phân vùng: Water aerobics - Low MET,Water aerobics and calisthenics,30.0,70.0,202.13,Equivalence Partitioning - Low Intensity,Water aerobics activity
-TC26,Phân vùng: Aqua jogging - High MET,Aqua jogging,30.0,70.0,360.15,Equivalence Partitioning - High Intensity,Aqua jogging exercise
-TC27,Phân vùng: Water walking high effort - Medium MET,Water walking (high effort),30.0,70.0,249.90,Equivalence Partitioning - Medium Intensity,High effort water walking
-TC28,Phân vùng: Water walking relaxed - Low MET,Water walking (relaxed),30.0,70.0,165.38,Equivalence Partitioning - Low Intensity,Relaxed water walking
-TC29,Kết hợp: High MET + High weight + Long duration,Butterfly,60.0,100.0,1449.00,Combination - Maximum,Maximum calorie burn scenario
-TC30,Kết hợp: Low MET + Low weight + Short duration,Treading water (relaxed),10.0,50.0,30.63,Combination - Minimum,Minimum calorie burn scenario
-TC31,Kết hợp: Medium MET + Standard weight + Standard duration,Crawl (recreational),45.0,65.0,424.86,Combination - Standard,Standard workout scenario
+TC13,Phân vùng: Backstroke intense - High MET,Backstroke (intense),30.0,70.0,349.13,Equivalence Partitioning - High Intensity,High intensity backstroke
+TC14,Phân vùng: Backstroke recreational - Low MET,Backstroke (recreational),30.0,70.0,176.40,Equivalence Partitioning - Low Intensity,Recreational backstroke
+TC15,Phân vùng: Breaststroke intense - High MET,Breaststroke (intense),30.0,70.0,378.53,Equivalence Partitioning - High Intensity,High intensity breaststroke
+TC16,Phân vùng: Breaststroke recreational - Low MET,Breaststroke (recreational),30.0,70.0,194.78,Equivalence Partitioning - Low Intensity,Recreational breaststroke
+TC17,Phân vùng: Butterfly - Highest MET,Butterfly,30.0,70.0,507.15,Equivalence Partitioning - Highest MET,Butterfly stroke - highest calorie burn
+TC18,Phân vùng: Crawl intense - High MET,Crawl (intense),30.0,70.0,367.50,Equivalence Partitioning - High Intensity,High intensity crawl/freestyle
+TC19,Phân vùng: Crawl recreational - Medium MET,Crawl (recreational),30.0,70.0,305.03,Equivalence Partitioning - Medium Intensity,Recreational crawl/freestyle
+TC20,Phân vùng: Sidestroke - Medium MET,Sidestroke,30.0,70.0,257.25,Equivalence Partitioning - Medium Intensity,Sidestroke swimming
+TC21,Phân vùng: Treading water high effort - High MET,Treading water (high effort),30.0,70.0,360.15,Equivalence Partitioning - High Intensity,High effort treading water
+TC22,Phân vùng: Treading water relaxed - Low MET,Treading water (relaxed),30.0,70.0,128.63,Equivalence Partitioning - Low Intensity,Relaxed treading water
+TC23,Phân vùng: Water aerobics - Low MET,Water aerobics and calisthenics,30.0,70.0,202.13,Equivalence Partitioning - Low Intensity,Water aerobics activity
+TC24,Phân vùng: Aqua jogging - High MET,Aqua jogging,30.0,70.0,360.15,Equivalence Partitioning - High Intensity,Aqua jogging exercise
+TC25,Phân vùng: Water walking high effort - Medium MET,Water walking (high effort),30.0,70.0,249.90,Equivalence Partitioning - Medium Intensity,High effort water walking
+TC26,Phân vùng: Water walking relaxed - Low MET,Water walking (relaxed),30.0,70.0,165.38,Equivalence Partitioning - Low Intensity,Relaxed water walking
+TC27,Kết hợp: High MET + High weight + Long duration,Butterfly,60.0,100.0,1449.00,Combination - Maximum,Maximum calorie burn scenario
+TC28,Kết hợp: Low MET + Low weight + Short duration,Treading water (relaxed),10.0,50.0,30.63,Combination - Minimum,Minimum calorie burn scenario
+TC29,Kết hợp: Medium MET + Standard weight + Standard duration,Crawl (recreational),45.0,65.0,424.86,Combination - Standard,Standard workout scenario
 
 # ============================================================================================
 # GHI CHÚ PHÂN TÍCH TEST CASES - BOUNDARY VALUE ANALYSIS (BVA) & EQUIVALENCE PARTITIONING (EP)
