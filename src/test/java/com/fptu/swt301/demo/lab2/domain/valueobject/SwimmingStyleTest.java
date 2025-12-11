@@ -102,14 +102,29 @@ public class SwimmingStyleTest {
     }
 
     @Test
-    @DisplayName("Test fromString - partial match")
-    void testFromStringPartialMatch() {
-        // Test partial matching (if implemented)
+    @DisplayName("Test fromString - partial match (displayName contains normalized)")
+    void testFromStringPartialMatchDisplayNameContains() {
+        // Test when displayName.toLowerCase().contains(normalized.toLowerCase())
         Optional<SwimmingStyle> result = SwimmingStyle.fromString("Butter");
-        // This might return empty if only exact match is supported
-        // Or might return BUTTERFLY if partial matching is implemented
-        // Based on the code, it should try partial matching
-        assertTrue(result.isPresent() || result.isEmpty());
+        assertTrue(result.isPresent());
+        assertEquals(SwimmingStyle.BUTTERFLY, result.get());
+
+        result = SwimmingStyle.fromString("Crawl");
+        assertTrue(result.isPresent());
+        assertTrue(result.get() == SwimmingStyle.CRAWL_INTENSE || result.get() == SwimmingStyle.CRAWL_RECREATIONAL);
+
+        result = SwimmingStyle.fromString("water");
+        assertTrue(result.isPresent()); // Should match water-related styles
+    }
+
+    @Test
+    @DisplayName("Test fromString - partial match (normalized contains displayName)")
+    void testFromStringPartialMatchNormalizedContains() {
+        // Test when normalized.toLowerCase().contains(style.displayName.toLowerCase())
+        // This is less common but should work
+        Optional<SwimmingStyle> result = SwimmingStyle.fromString("Butterfly swimming");
+        assertTrue(result.isPresent());
+        assertEquals(SwimmingStyle.BUTTERFLY, result.get());
     }
 
     @Test
