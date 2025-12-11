@@ -169,6 +169,8 @@
 					<!-- Include only Lab2 package for coverage -->
 					<includes>
 						<include>com/fptu/swt301/demo/lab2/**/*</include>
+<!--                        <include>com/fptu/swt301/demo/calculator/**/*</include>-->
+<!--                        <include>com/fptu/swt301/demo/insurance/**/*</include>-->
 					</includes>
 				</configuration>
 			</plugin>
